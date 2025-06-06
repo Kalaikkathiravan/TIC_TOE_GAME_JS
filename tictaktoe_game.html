@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tic Tac Toe</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      text-align: center;
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      font-size: 36px;
+      margin-bottom: 30px;
+    }
+
+    #board {
+      margin: 0 auto 20px auto;
+      width: 306px; /* 3 cells * (100px + 2*margin) */
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+    }
+
+    .cell {
+      width: 100px;
+      height: 100px;
+      background-color: white;
+      font-size: 36px;
+      margin: 1px;
+      padding-top: 26px;
+      border: 2px solid black;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    #status {
+      font-size: 20px;
+      margin: 20px 0;
+    }
+
+    #reset {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+
+    #reset:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Tic Tac Toe</h1>
+    <div id="board"></div>
+    <div id="status">Turn: X</div>
+    <button id="reset">Reset</button>
+  </div>
+
+  <script>
+    var currentPlayer = "X";
+    var board = ["", "", "", "", "", "", "", "", ""];
+    var gameOver = false;
+    var cells = [];
+
+    var boardDiv = document.getElementById("board");
+    var statusText = document.getElementById("status");
+    var resetButton = document.getElementById("reset");
+
+    var i = 0;
+    while (i < 9) {
+      var cell = document.createElement("div");
+      cell.className = "cell";
+      cell.id = i;
+
+      cell.onclick = function () {
+        var index = parseInt(this.id);
+        if (board[index] === "" && !gameOver) {
+          board[index] = currentPlayer;
+          this.innerHTML = currentPlayer;
+
+          if (checkWinner()) {
+            statusText.innerHTML = currentPlayer + " wins!";
+            gameOver = true;
+          } else if (isDraw()) {
+            statusText.innerHTML = "It's a draw!";
+            gameOver = true;
+          } else {
+            currentPlayer = currentPlayer === "X" ? "O" : "X";
+            statusText.innerHTML = "Turn: " + currentPlayer;
+          }
+        }
+      };
+
+      boardDiv.appendChild(cell);
+      cells.push(cell);
+      i++;
+    }
+
+    resetButton.onclick = function () {
+      for (var j = 0; j < 9; j++) {
+        board[j] = "";
+        cells[j].innerHTML = "";
+        cells[j].style.backgroundColor = "white";
+      }
+      currentPlayer = "X";
+      gameOver = false;
+      statusText.innerHTML = "Turn: " + currentPlayer;
+    };
+
+    function checkWinner() {
+      var wins = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
+      ];
+
+      for (var k = 0; k < wins.length; k++) {
+        var a = wins[k][0];
+        var b = wins[k][1];
+        var c = wins[k][2];
+        if (board[a] !== "" && board[a] === board[b] && board[a] === board[c]) {
+          cells[a].style.backgroundColor = "#90ee90";
+          cells[b].style.backgroundColor = "#90ee90";
+          cells[c].style.backgroundColor = "#90ee90";
+          return true;
+        }
+      }
+      return false;
+    }
+
+    function isDraw() {
+      for (var m = 0; m < 9; m++) {
+        if (board[m] === "") {
+          return false;
+        }
+      }
+      return true;
+    }
+  </script>
+</body>
+</html>
